@@ -10,7 +10,7 @@ class Player:
     def reduce_health(self, amount: int):
         self.health -= amount
         if self.health <= 0:
-            return False
+            return 0
         else:
             return self.health
 
@@ -50,7 +50,35 @@ class Player:
                 print("You smack into a wall, ouch!")
                 self.health -= 1
                 return False
+        elif action == "search":
+            if self.room.items:
+                print("You look around and find: ")
+                for item in self.room.items:
+                    print(f"\n=> {item.name}")
+                self.room.searched = True
+                return True
+            else:
+                print(self.room.items)
+                print("You look around and find nothing but air.")
+                return False
+        elif action[:4] == "take":
+            if self.room.searched:
+                for item in self.room.items:
+                    if item.name.lower() == action[5:]:
+                        self.inv.append(item)
+                        print(f"You picked up: {item.name} - {item.description}")
+                        self.room.items.remove(item)
+                        return True
+                    else:
+                        print("Cannot find that item")
+                        return False
+                else:
+                    return False
+            elif not self.room.searched:
+                print("You tried to pick up, air?")
+                return False
         else:
+            print("NAHH")
             return False
 
     def change_room(self, new_room):

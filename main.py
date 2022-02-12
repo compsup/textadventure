@@ -10,6 +10,7 @@ from player import Player
 
 #### Module Imports ####
 from room import Room
+from items import Item
 
 # Global Variables
 CURRENT_VERSION = "0.0.1"
@@ -80,16 +81,13 @@ def setup_rooms():
     Takes the rooms and sets each one of them up so they connect together
     :return: All room classes in a list
     """
-    victoryroom = Room(
-        actions=["backward"], name="endroom", introtext="VICTORY!", is_victory=True
-    )
-    secondroom = Room(
-        actions=["backward", "forward"], name="secondroom", introtext="Second Room"
-    )
+    torch = Item(name="Torch", description="A sturdy torch", value=0, lightsource=True)
+    victoryroom = Room(name="endroom", introtext="VICTORY!", is_victory=True)
+    secondroom = Room(name="secondroom", introtext="Second Room")
     startroom = Room(
-        actions=["forward", "backward"],
         name="startroom",
         introtext="You get randomly put into a dark. Cave? Well, it looks like one",
+        items=[torch],
     )
     rooms = [startroom, secondroom, victoryroom]
     length = len(rooms)
@@ -111,20 +109,18 @@ def gameloop(player, rooms, settings, savedgame=False):
         current_room = player.room
         current_room.intro_text()
     else:
+        # Start at the first room in list
         current_room = rooms[0]
         current_room.intro_text()
     while player.is_alive() and not player.victory:
         savemanager.save(player, rooms)
         current_room = player.room
         action = choice()
-        if action in current_room.actions:
-            player.do_action(action)
-        elif action == "inv":
+        if action == "inv":
             player.print_inventory()
         elif action == "stat":
             player.print_stats()
         elif action == "debug" and settings["debug_mode"]:
-            print(current_room.actions)
             print(f"Current Room: {current_room.name}")
             print("You are now in debug mode, type 'leave' to exit: ")
             print("Type 'help-debug' for debug commands")
@@ -144,12 +140,7 @@ def gameloop(player, rooms, settings, savedgame=False):
                     else:
                         print("Could not find that room.")
                 elif command == "room-info":
-                    print(f"Room name: {current_room.name}")
-                    print(f"Actions: {current_room.actions}")
-                    print(f"Next room: {current_room.next_room}")
-                    print(f"Last room: {current_room.last_room}")
-                    print(f"IsVictory: {current_room.is_victory}")
-                    print(f"Room Looted: {current_room.roomlooted}")
+                    print(vars(player.room))
                 elif command == "leave":
                     print("Leaving DEBUG mode")
                     break
@@ -158,7 +149,7 @@ def gameloop(player, rooms, settings, savedgame=False):
                     for command in valid_commands:
                         print("==> " + command)
         else:
-            print("Not a legal action")
+            player.do_action(action)
     if player.victory:
         with open("endcredits.txt", "r") as f:
             text = f.readlines()
