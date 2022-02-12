@@ -6,9 +6,9 @@ roomsFile = "rooms.pickle"
 
 
 def save(player, rooms):
-    with open(playerFile, 'wb') as f:
+    with open(playerFile, "wb") as f:
         pickle.dump(player, f)
-    with open(roomsFile, 'wb') as f:
+    with open(roomsFile, "wb") as f:
         pickle.dump(rooms, f)
 
 
@@ -17,8 +17,8 @@ def check_for_savefile():
 
 
 def load():
-    with open(playerFile, 'rb') as f:
+    with open(playerFile, "rb") as f:
         player = pickle.load(f)
-    with open(roomsFile, 'rb') as f:
+    with open(roomsFile, "rb") as f:
         rooms = pickle.load(f)
     return player, rooms

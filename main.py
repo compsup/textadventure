@@ -7,6 +7,7 @@ import time
 import config
 import savemanager
 from player import Player
+
 #### Module Imports ####
 from room import Room
 
@@ -16,11 +17,11 @@ CURRENT_VERSION = "0.0.1"
 
 def clear():
     if platform.system() == "Windows":
-        os.system('cls')
+        os.system("cls")
     elif platform.system() == "Linux":
-        os.system('clear')
+        os.system("clear")
     else:
-        print(f'Your OS: {platform.system()}, is not currently supported!')
+        print(f"Your OS: {platform.system()}, is not currently supported!")
         input("Press enter to exit...")
         sys.exit()
     return platform.system()
@@ -31,14 +32,16 @@ def main():
     settings = config.load()
     clear()
     while True:
-        print(f'''
+        print(
+            f"""
         Version: {CURRENT_VERSION}
         ---------------------------------------------
 
         TextAdventure - by compsup2
 
         ---------------------------------------------
-            ''')
+            """
+        )
         choice = prompt("Select an option", "New Game", "Options", "Load a saved game")
         if choice == "1":
             clear()
@@ -47,14 +50,20 @@ def main():
             gameloop(player, rooms, settings)
         elif choice == "2":
             clear()
-            print("These are your current settings, to adjust please edit the 'config.json' file.")
+            print(
+                "These are your current settings, to adjust please edit the"
+                " 'config.json' file."
+            )
             print(settings)
             input("Press enter to continue...")
         elif choice == "3":
             clear()
             print("Checking for save file...")
             if savemanager.check_for_savefile():
-                if input("Game file found! Do you want to load it? (y/n): ").lower() == "y":
+                if (
+                    input("Game file found! Do you want to load it? (y/n): ").lower()
+                    == "y"
+                ):
                     player, rooms = savemanager.load()
                     gameloop(player, rooms, settings, savedgame=True)
                 else:
@@ -67,12 +76,21 @@ def main():
 
 
 def setup_rooms():
-    # Room setup
-    victoryroom = Room(actions=["backward"], name="endroom", introtext="VICTORY!", is_victory=True)
-    secondroom = Room(actions=["backward", "forward"], name="secondroom", introtext="Second Room")
-    startroom = Room(actions=["forward"], name="startroom", introtext="You get randomly put into a dark. Cave? Well, "
-                                                                      "it looks like a cave")
-
+    """
+    Takes the rooms and sets each one of them up so they connect together
+    :return: All room classes in a list
+    """
+    victoryroom = Room(
+        actions=["backward"], name="endroom", introtext="VICTORY!", is_victory=True
+    )
+    secondroom = Room(
+        actions=["backward", "forward"], name="secondroom", introtext="Second Room"
+    )
+    startroom = Room(
+        actions=["forward", "backward"],
+        name="startroom",
+        introtext="You get randomly put into a dark. Cave? Well, it looks like one",
+    )
     rooms = [startroom, secondroom, victoryroom]
     length = len(rooms)
     # Assign next_room to rooms
@@ -136,22 +154,29 @@ def gameloop(player, rooms, settings, savedgame=False):
                     print("Leaving DEBUG mode")
                     break
                 elif command == "help-debug":
-                    valid_commands = ['leave', 'room', 'goto', 'room-info']
+                    valid_commands = ["leave", "room", "goto", "room-info"]
                     for command in valid_commands:
                         print("==> " + command)
         else:
             print("Not a legal action")
     if player.victory:
-        with open("endcredits.txt", 'r') as f:
+        with open("endcredits.txt", "r") as f:
             text = f.readlines()
             for line in text:
                 print(line)
                 time.sleep(1)
             input("Press any key to continue...")
+    elif not player.is_alive():
+        print("You died! Better luck next time.")
+        if choice("Respawn at last checkpoint?"):
+            player, rooms = savemanager.load()
+            gameloop(player, rooms, settings, savedgame=True)
+        else:
+            input("Press any key to continue...")
 
 
 def helpmenu():
-    possible_actions = ['forward', 'backward', 'take', 'drop']
+    possible_actions = ["forward", "backward", "take", "drop"]
     print("[====== HELP MENU ======]")
     print("Game wide possible actions:\n")
     for action in possible_actions:
@@ -163,9 +188,9 @@ def choice(message: str = None):
     yes = ["yes", "y"]
     while True:
         if message:
-            choice = str(input(f'{message} > ')).lower()
+            choice = str(input(f"{message} > ")).lower()
         else:
-            choice = str(input(f'> ')).lower()
+            choice = str(input(f"> ")).lower()
 
         if choice == "help":
             helpmenu()
@@ -179,11 +204,13 @@ def choice(message: str = None):
 
 
 def prompt(message: str, *options):
-    print(f'''
+    print(
+        f"""
 
 {message}
 
-    ''')
+    """
+    )
     i = 0
     for option in options:
         i += 1
@@ -193,5 +220,5 @@ def prompt(message: str, *options):
     return choice()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

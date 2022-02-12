@@ -3,7 +3,15 @@ from room import Room
 
 
 def test_get_room():
-    room = Room(actions=["backward", "forward"], name="testroom", introtext="test", is_victory=True)
+    """
+    Asserts that the passed in room for the player is assessable from the player class
+    """
+    room = Room(
+        actions=["backward", "forward"],
+        name="testroom",
+        introtext="test",
+        is_victory=True,
+    )
     player = Player("testsubject", room)
 
     returnedRoom = player.room
@@ -16,8 +24,18 @@ def test_get_room():
 
 
 def test_reduce_health():
-    room = Room(actions=["backward", "forward"], name="testroom", introtext="test", is_victory=True)
+    """
+    Asserts that reducing the players health not all the way too 0 will result in it returning the current health
+    Asserts that if the players health gets reduced to 0 or below that it will return false
+    """
+    room = Room(
+        actions=["backward", "forward"],
+        name="testroom",
+        introtext="test",
+        is_victory=True,
+    )
     player = Player("testsubject", room)
+    player.health = 100
 
     response = player.reduce_health(99)
 
@@ -30,8 +48,21 @@ def test_reduce_health():
 
 
 def test_change_room():
-    room = Room(actions=["backward", "forward"], name="testroom", introtext="test", is_victory=True)
-    newroom = Room(actions=["backward", "forward"], name="testnewroom", introtext="test", is_victory=False)
+    """
+    Asserts that changing the players room correctly works
+    """
+    room = Room(
+        actions=["backward", "forward"],
+        name="testroom",
+        introtext="test",
+        is_victory=True,
+    )
+    newroom = Room(
+        actions=["backward", "forward"],
+        name="testnewroom",
+        introtext="test",
+        is_victory=False,
+    )
 
     player = Player("testsubject", room)
     player.change_room(newroom)
@@ -41,8 +72,21 @@ def test_change_room():
 
 
 def test_do_action():
-    newroom = Room(actions=["backward", "forward"], name="testnewroom", introtext="test", is_victory=False)
-    room = Room(actions=["backward", "forward"], name="testroom", introtext="test", is_victory=False)
+    """
+    Asserts that valid commands return True and invalid return False
+    """
+    newroom = Room(
+        actions=["backward", "forward"],
+        name="testnewroom",
+        introtext="test",
+        is_victory=False,
+    )
+    room = Room(
+        actions=["backward", "forward"],
+        name="testroom",
+        introtext="test",
+        is_victory=False,
+    )
 
     newroom.last_room = room
     room.next_room = newroom
@@ -51,4 +95,3 @@ def test_do_action():
     assert player.do_action("forward") is True
     assert player.do_action("backward") is True
     assert player.do_action("RandomInvalidAction") is False
-

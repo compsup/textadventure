@@ -36,5 +36,3 @@ def load():
 def create():
     with open(configFileName, "w") as f:
         json.dump(defaultConfig, f, indent=2)
-
-
