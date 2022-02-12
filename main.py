@@ -13,7 +13,7 @@ from room import Room
 from items import Item
 
 # Global Variables
-CURRENT_VERSION = "0.0.2"
+CURRENT_VERSION = "0.0.1"
 
 
 def clear():
