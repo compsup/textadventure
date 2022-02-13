@@ -28,6 +28,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: Test with pytest
+    - name: Lint with Black
       run: |
         black .
