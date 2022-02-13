@@ -14,13 +14,13 @@ class Item:
         self.description = description
         self.value = value
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "{}\n=====\n{}\nValue: {}\n".format(
             self.name, self.description, self.value
         )
 
 
-class Torch(Item):
+class Torch(Item):  # pragma: no cover
     def __init__(self):
         super().__init__(
             name="Torch",

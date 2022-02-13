@@ -16,19 +16,31 @@ from items import Item
 CURRENT_VERSION = "0.0.2"
 
 
-def clear():
-    if platform.system() == "Windows":
-        os.system("cls")
-    elif platform.system() == "Linux":
-        os.system("clear")
-    else:
-        print(f"Your OS: {platform.system()}, is not currently supported!")
-        input("Press enter to exit...")
-        sys.exit()
+def get_os_type():
     return platform.system()
 
 
-def main():
+def clear():
+    """
+    Clears the screen
+    :return: The current platform
+    """
+    if get_os_type() == "Windows":
+        os.system("cls")
+        return "cls"
+    elif get_os_type() == "Linux":
+        os.system("clear")
+        return "clear"
+    else:
+        return False
+
+
+def main():  # pragma: no cover
+    """
+    Main menu
+
+    :return: None
+    """
     print("Loading config...")
     settings = config.load()
     clear()
@@ -79,17 +91,31 @@ def main():
 def setup_rooms():
     """
     Takes the rooms and sets each one of them up so they connect together
+
     :return: All room classes in a list
     """
     torch = Item(name="Torch", description="A sturdy torch", value=0, lightsource=True)
+    blood = Item(
+        name="Vial of Blood",
+        description="O-negative, this will come in handy.",
+        value=50,
+    )
+    axe = Item(
+        name="Death Axe",
+        description="Great for killing. Looks like it's been used before!",
+        value=75,
+    )
     victoryroom = Room(name="endroom", introtext="VICTORY!", is_victory=True)
+    thirdroom = Room(
+        name="DeathRoom", introtext="All who enter do not leave!", items=[blood, axe]
+    )
     secondroom = Room(name="secondroom", introtext="Second Room")
     startroom = Room(
         name="startroom",
         introtext="You get randomly put into a dark. Cave? Well, it looks like one",
         items=[torch],
     )
-    rooms = [startroom, secondroom, victoryroom]
+    rooms = [startroom, secondroom, thirdroom, victoryroom]
     length = len(rooms)
     # Assign next_room to rooms
     for index, room in enumerate(rooms):
@@ -104,7 +130,7 @@ def setup_rooms():
 
 
 # Start of the game
-def gameloop(player, rooms, settings, savedgame=False):
+def gameloop(player, rooms, settings, savedgame=False):  # pragma: no cover
     if savedgame:
         current_room = player.room
         current_room.intro_text()
@@ -150,7 +176,7 @@ def gameloop(player, rooms, settings, savedgame=False):
                         print("==> " + command)
         else:
             player.do_action(action)
-    if player.victory:
+    if player.victory and player.is_alive():
         with open("endcredits.txt", "r") as f:
             text = f.readlines()
             for line in text:
@@ -166,8 +192,17 @@ def gameloop(player, rooms, settings, savedgame=False):
             input("Press any key to continue...")
 
 
-def helpmenu():
-    possible_actions = ["forward", "backward", "take", "drop"]
+def helpmenu():  # pragma: no cover
+    possible_actions = [
+        "forward",
+        "backward",
+        "take",
+        "drop",
+        "inv",
+        "help",
+        "stat",
+        "search",
+    ]
     print("[====== HELP MENU ======]")
     print("Game wide possible actions:\n")
     for action in possible_actions:
@@ -211,5 +246,5 @@ def prompt(message: str, *options):
     return choice()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
