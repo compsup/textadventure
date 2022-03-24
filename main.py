@@ -131,13 +131,9 @@ def setup_rooms():
 
 # Start of the game
 def gameloop(player, rooms, settings, savedgame=False):  # pragma: no cover
-    if savedgame:
-        current_room = player.room
-        current_room.intro_text()
-    else:
-        # Start at the first room in list
-        current_room = rooms[0]
-        current_room.intro_text()
+    current_room = player.room
+    current_room.intro_text()
+    
     while player.is_alive() and not player.victory:
         savemanager.save(player, rooms)
         current_room = player.room
