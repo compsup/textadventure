@@ -1,11 +1,16 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
 class Player:
-    def __init__(self, name: str, room):
-        self.name = name
-        self.health = 100
-        self.inv = []
-        self.haslightsource = False
-        self.victory = False
-        self.room = room
+    name: str
+    room: object
+    inv: list = field(default_factory=list)
+    health: int = 100
+    haslightsource: bool = False
+    victory: bool = False
+    if inv is None:
+        inv = []
 
     def reduce_health(self, amount: int):
         self.health -= amount

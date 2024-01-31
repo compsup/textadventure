@@ -1,23 +1,15 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
 class Room:
-    def __init__(
-        self,
-        name,
-        introtext,
-        last_room=None,
-        next_room=None,
-        is_victory=False,
-        items=None,
-    ):
-        if items is None:
-            self.items = []
-        else:
-            self.items = items
-        self.name = name
-        self.next_room = next_room
-        self.last_room = last_room
-        self.introtext = introtext
-        self.is_victory = is_victory
-        self.searched = False
+    name: str
+    introtext: str
+    last_room: object = None
+    next_room: object = None
+    is_victory: bool = False
+    items: list = field(default_factory=list)
+    searched: bool = False
 
     def intro_text(self):
         """Information to be displayed when the player moves into this room."""

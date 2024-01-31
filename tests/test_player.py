@@ -19,7 +19,7 @@ def room2():
 
 
 def player():
-    return Player("testsubject", room1())
+    return Player(name="testsubject", room=room1())
 
 
 def test_get_room():

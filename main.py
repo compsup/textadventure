@@ -59,7 +59,7 @@ def main():  # pragma: no cover
         if choice == "1":
             clear()
             rooms = setup_rooms()
-            player = Player(input("Name of your character: "), rooms[0])
+            player = Player(name=input("Name of your character: "), room=rooms[0])
             gameloop(player, rooms, settings)
         elif choice == "2":
             clear()
@@ -78,7 +78,7 @@ def main():  # pragma: no cover
                     == "y"
                 ):
                     player, rooms = savemanager.load()
-                    gameloop(player, rooms, settings, savedgame=True)
+                    gameloop(player, rooms, settings)
                 else:
                     print("user aborted loading from file.")
                     input("Press enter to continue...")
@@ -130,10 +130,10 @@ def setup_rooms():
 
 
 # Start of the game
-def gameloop(player, rooms, settings, savedgame=False):  # pragma: no cover
+def gameloop(player, rooms, settings):  # pragma: no cover
     current_room = player.room
     current_room.intro_text()
-    
+
     while player.is_alive() and not player.victory:
         savemanager.save(player, rooms)
         current_room = player.room
@@ -183,7 +183,7 @@ def gameloop(player, rooms, settings, savedgame=False):  # pragma: no cover
         print("You died! Better luck next time.")
         if choice("Respawn at last checkpoint?"):
             player, rooms = savemanager.load()
-            gameloop(player, rooms, settings, savedgame=True)
+            gameloop(player, rooms, settings)
         else:
             input("Press any key to continue...")
 
@@ -206,13 +206,13 @@ def helpmenu():  # pragma: no cover
     print("\n[=======================]")
 
 
-def choice(message: str = None):
+def choice(message: str = ""):
     yes = ["yes", "y"]
     while True:
         if message:
             choice = str(input(f"{message} > ")).lower()
         else:
-            choice = str(input(f"> ")).lower()
+            choice = str(input("> ")).lower()
 
         if choice == "help":
             helpmenu()
